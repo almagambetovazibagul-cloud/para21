@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Эко-практикум: Периодические дроби</title>
+  <style>
+    :root {
+      --forest: #14301f; --moss: #2f7d45; --leaf: #58b05a; --mint: #e6f1e4;
+      --kraft: #efe4c8; --clay: #b5653a; --water: #4fb3e8; --sun: #f2b632;
+      --honesty: #8e6bbf; --diligence: #d97706; --cooperation: #0891b2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: "Nunito", "Trebuchet MS", system-ui, sans-serif;
+      background-color: var(--kraft);
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(88, 176, 90, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(79, 179, 232, 0.08) 0%, transparent 45%),
+        radial-gradient(#14301f0d 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 14px 14px;
+      color: var(--forest); line-height: 1.5; padding: 16px 10px 40px;
+      position: relative; overflow-x: hidden;
+      -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+    }
+
+    .ambient-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .ambient-mote { position: absolute; border-radius: 50%; opacity: 0.35; animation: floatMote 9s ease-in-out infinite; }
+    @keyframes floatMote {
+      0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+      50% { transform: translateY(-18px) translateX(10px) rotate(18deg); }
+    }
+
+    .container { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+    .card {
+      background: linear-gradient(180deg, #fffef9 0%, #fcf9ee 100%);
+      border: 2px solid var(--leaf); border-radius: 24px 6px 24px 6px;
+      box-shadow: 0 6px 0 #2f7d4522, 0 10px 20px rgba(20, 48, 31, 0.05);
+      padding: 20px; margin-bottom: 16px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; align-items: center; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 5px; background: var(--mint); color: var(--moss);
+      border: 1.5px solid var(--leaf); border-radius: 16px 4px 16px 4px; padding: 4px 10px;
+      font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px;
+      box-shadow: 0 2px 0 rgba(47, 125, 69, 0.15);
+    }
+    h1 { font-size: 1.6rem; font-weight: 800; color: var(--forest); line-height: 1.2; margin-bottom: 6px; }
+    .subtitle { font-size: 0.9rem; opacity: 0.88; margin-bottom: 12px; }
+
+    .student-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .field-input {
+      background: var(--mint); border: 2px solid var(--leaf); border-radius: 14px 4px 14px 4px;
+      padding: 12px 14px; font-family: inherit; font-size: 16px;
+      font-weight: 700; color: var(--forest); outline: none; flex: 1; min-width: 140px;
+      transition: all 0.2s ease;
+    }
+    .field-input:focus { background: #fffdf6; border-color: var(--moss); box-shadow: 0 0 0 3px #58b05a33; }
+
+    .art-slot {
+      background: linear-gradient(180deg, #dff3fa 0%, #e6f4e4 75%, #d6ebd4 100%);
+      border: 2px dashed var(--leaf); border-radius: 24px 6px 24px 6px;
+      min-height: 140px; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; overflow: hidden; padding: 6px; text-align: center;
+      position: relative; box-shadow: inset 0 2px 10px rgba(47, 125, 69, 0.08);
+    }
+
+    .mission-banner {
+      background: linear-gradient(90deg, #e3f4fc 0%, #fcf3db 100%);
+      border: 2px solid #b3e5fc; border-radius: 16px; padding: 16px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(29, 116, 168, 0.08);
+    }
+    .mission-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+    .mission-icon { font-size: 2rem; flex-shrink: 0; }
+    .mission-text h3 { font-size: 1.05rem; font-weight: 800; color: #0277bd; margin-bottom: 4px; }
+    .mission-text p { font-size: 0.9rem; color: #2D4434; line-height: 1.4; }
+    .values-map { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+    .value-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #fffdf6; border: 1.5px solid var(--moss); border-radius: 12px 3px 12px 3px;
+      padding: 4px 10px; font-size: 0.78rem; font-weight: 800; color: var(--forest);
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+    .value-chip.active { background: var(--mint); transform: translateY(-1px); }
+
+    .hud-bar {
+      display: flex; flex-direction: column; gap: 10px;
+      background: linear-gradient(135deg, #e6f1e4 0%, #dcecd9 100%);
+      border-color: var(--moss); padding: 14px 16px;
+    }
+    .hud-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .resources { display: flex; gap: 8px; flex: 1; justify-content: space-around; }
+    .res-pill {
+      display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+      border-radius: 16px 4px 16px 4px; font-weight: 800; font-size: 0.9rem;
+      background: #fffdf6; border: 2px solid var(--forest); box-shadow: 0 3px 0 #14301f22;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .res-pill.pulse { transform: scale(1.08); }
+    .res-water { border-color: var(--water); } .res-sun { border-color: var(--sun); }
+    .dot-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    .values-track {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      padding-top: 10px; border-top: 1.5px dashed var(--leaf);
+    }
+    .value-track-item {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 11px; border-radius: 14px 4px 14px 4px;
+      background: #fffdf6; border: 1.5px dashed #b0b8a8;
+      font-size: 0.8rem; font-weight: 800; color: #8a9184;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .value-track-item.unlocked {
+      border-style: solid; border-color: var(--moss); color: var(--forest);
+      background: var(--mint); box-shadow: 0 3px 0 #2f7d4533;
+      transform: translateY(-2px);
+    }
+    .value-track-item.honesty.unlocked { border-color: var(--honesty); background: #f3eefb; color: #5b3f8a; }
+    .value-track-item.diligence.unlocked { border-color: var(--diligence); background: #fef3e2; color: #92400e; }
+    .value-track-item.cooperation.unlocked { border-color: var(--cooperation); background: #e0f7fa; color: #075985; }
+    .value-track-item .vt-label { font-size: 0.7rem; opacity: 0.75; font-weight: 700; }
+
+    .leaf-steps { display: flex; gap: 6px; align-items: center; justify-content: center; width: 100%; }
+    .leaf-step {
+      width: 32px; height: 32px; border-radius: 12px 4px 12px 4px; background: #fffdf6;
+      border: 2px solid var(--leaf); display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.85rem; color: var(--moss);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .leaf-step.done {
+      background: linear-gradient(135deg, #3a9454, var(--moss));
+      border-color: var(--forest); color: #fffdf6;
+      transform: translateY(-2px) scale(1.06);
+      box-shadow: 0 3px 0 rgba(20, 48, 31, 0.25);
+    }
+
+    .task-card {
+      display: grid; grid-template-columns: 90px 1fr; gap: 14px; align-items: start;
+      position: relative;
+    }
+    .task-card.is-filled {
+      border-color: var(--moss);
+      background: linear-gradient(180deg, #ffffff 0%, #f3faf2 100%);
+    }
+    .task-art {
+      width: 90px; height: 90px; background: var(--mint); border: 2.5px solid var(--leaf);
+      border-radius: 16px 5px 16px 5px; display: flex; align-items: center; justify-content: center;
+      overflow: hidden; padding: 0; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.05);
+      position: relative; transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .task-card.is-filled .task-art {
+      border-color: var(--moss);
+      box-shadow: 0 4px 10px rgba(47, 125, 69, 0.16);
+    }
+    .task-art svg { width: 100%; height: 100%; display: block; }
+    .task-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 6px; gap: 4px; }
+    .task-badge {
+      background: linear-gradient(90deg, var(--kraft), #f5ecd6);
+      border: 1.5px solid var(--leaf); border-radius: 12px 3px 12px 3px;
+      padding: 3px 10px; font-size: 0.8rem; font-weight: 800; color: var(--forest);
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .task-status-tag {
+      font-size: 0.72rem; font-weight: 800; color: var(--moss);
+      background: var(--mint); border: 1px solid var(--leaf);
+      border-radius: 10px 3px 10px 3px; padding: 2px 8px;
+      opacity: 0; transform: scale(0.9); transition: all 0.25s ease;
+    }
+    .task-card.is-filled .task-status-tag { opacity: 1; transform: scale(1); }
+    .task-question { font-size: 1rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+    .value-why {
+      font-size: 0.82rem; font-style: italic; color: var(--moss);
+      background: #f3faf2; border-left: 3px solid var(--leaf);
+      padding: 6px 10px; border-radius: 0 8px 8px 0; margin-bottom: 12px;
+      line-height: 1.35;
+    }
+
+    .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 3px; font-weight: 800; line-height: 1.05; }
+    .frac .num { border-bottom: 2px solid var(--forest); padding: 0 4px 2px; }
+    .frac .den { padding: 2px 4px 0; }
+
+    .controls-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .input-cluster { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 100%; }
+    .answer-box {
+      flex: 1; min-height: 46px; padding: 10px 12px; font-family: inherit;
+      font-size: 18px; font-weight: 800; color: var(--forest); background: #fffdf6;
+      border: 2px solid var(--moss); border-radius: 14px 4px 14px 4px; outline: none; text-align: center;
+      transition: all 0.2s ease;
+    }
+    .answer-box:focus { box-shadow: 0 0 0 3px #58b05a44; background: #ffffff; }
+    .btn-slash {
+      width: 46px; height: 46px; border-radius: 12px 4px 12px 4px; background: var(--mint);
+      border: 2px solid var(--moss); color: var(--forest); font-size: 1.25rem; font-weight: 900;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 0 #2f7d4533; transition: transform 0.1s ease, background 0.15s ease;
+    }
+    .btn-slash:hover { background: #d6ebd4; }
+    .btn-slash:active { transform: translateY(2px); box-shadow: none; }
+    .live-preview {
+      min-width: 52px; height: 46px; padding: 0 8px; background: var(--kraft);
+      border: 1.5px dashed var(--moss); border-radius: 12px 4px 12px 4px;
+      display: inline-flex; align-items: center; justify-content: center; font-weight: 800; color: var(--moss);
+      transition: all 0.2s ease;
+    }
+    .task-card.is-filled .live-preview {
+      background: var(--mint); border-style: solid; color: var(--forest);
+    }
+
+    .btn-submit {
+      width: 100%; padding: 16px; font-size: 1.05rem; font-weight: 800; color: #fffdf6;
+      background: linear-gradient(180deg, #378d4f 0%, var(--moss) 100%);
+      border: 2px solid var(--forest); border-radius: 16px;
+      cursor: pointer; box-shadow: 0 4px 0 var(--forest); transition: 0.12s;
+      margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+      position: relative; overflow: hidden;
+    }
+    .btn-submit::after {
+      content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+      transform: skewX(-20deg); animation: btnShimmer 4s infinite;
+    }
+    @keyframes btnShimmer {
+      0%, 75% { left: -60%; }
+      100% { left: 130%; }
+    }
+    .btn-submit:active { transform: translateY(3px); box-shadow: none; }
+    .btn-submit:disabled { background: #94a3b8; border-color: #64748b; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-submit:disabled::after { display: none; }
+
+    .eco-layer { opacity: 0.22; transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .eco-layer.active { opacity: 1; }
+
+    @keyframes sunSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes cloudDrift { 0%, 100% { transform: translateX(0px); } 50% { transform: translateX(7px); } }
+    @keyframes treeSway { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.5deg); } }
+    @keyframes dropFall { 0% { transform: translateY(0px); opacity: 0.95; } 100% { transform: translateY(10px); opacity: 0.2; } }
+    @keyframes wingFlap { 0%, 100% { transform: scaleX(1) translateY(0); } 50% { transform: scaleX(0.75) translateY(-2px); } }
+    @keyframes sparkleTwinkle { 0%, 100% { opacity: 0.3; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.2); } }
+
+    .anim-sun-rays { transform-origin: 178px 34px; animation: sunSpin 18s linear infinite; }
+    .anim-sun-rays-sm { transform-origin: 50px 34px; animation: sunSpin 16s linear infinite; }
+    .anim-cloud { animation: cloudDrift 6s ease-in-out infinite; }
+    .anim-tree { transform-origin: 102px 112px; animation: treeSway 4.5s ease-in-out infinite; }
+    .anim-drops { animation: dropFall 1.3s ease-in infinite; }
+    .anim-butterfly { transform-origin: center; animation: wingFlap 1.4s ease-in-out infinite; }
+    .anim-sparkle { transform-origin: center; animation: sparkleTwinkle 2.2s ease-in-out infinite; }
+
+    @media (max-width: 640px) {
+      body { padding: 10px 8px 30px; }
+      .card { padding: 14px 12px; margin-bottom: 12px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 12px; text-align: center; }
+      .student-row { flex-direction: column; }
+      .field-input { min-width: 100%; text-align: center; }
+      .hud-bar { padding: 12px; gap: 8px; }
+      .resources { width: 100%; justify-content: center; gap: 12px; }
+      .task-card { grid-template-columns: 64px 1fr; gap: 10px; align-items: start; }
+      .task-art { width: 64px; height: 64px; border-radius: 12px 4px 12px 4px; }
+      .task-header { margin-bottom: 4px; }
+      .task-badge { font-size: 0.72rem; padding: 2px 8px; }
+      .task-status-tag { font-size: 0.65rem; padding: 1px 6px; }
+      .task-question { font-size: 0.92rem; line-height: 1.35; }
+      .value-why { font-size: 0.75rem; padding: 5px 8px; margin-bottom: 8px; }
+      .input-cluster { min-width: 100%; }
+      .answer-box { font-size: 16px; min-height: 42px; }
+      .btn-slash { width: 42px; height: 42px; }
+      .live-preview { min-width: 46px; height: 42px; }
+      .btn-submit { font-size: 0.95rem; padding: 13px; }
+      .mission-head { flex-direction: column; text-align: center; gap: 8px; }
+      .values-track { gap: 6px; }
+      .value-track-item { font-size: 0.7rem; padding: 3px 7px; }
+    }
+
+    @media (max-width: 380px) {
+      .task-card { grid-template-columns: 56px 1fr; gap: 8px; }
+      .task-art { width: 56px; height: 56px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-bg" aria-hidden="true">
+    <span class="ambient-mote" style="width:10px;height:10px;background:#58b05a;top:12%;left:8%;animation-delay:0s;"></span>
+    <span class="ambient-mote" style="width:8px;height:8px;background:#f2b632;top:34%;right:7%;animation-delay:2s;"></span>
+    <span class="ambient-mote" style="width:12px;height:12px;background:#4fb3e8;top:62%;left:6%;animation-delay:4s;"></span>
+    <span class="ambient-mote" style="width:9px;height:9px;background:#58b05a;top:82%;right:9%;animation-delay:1.5s;"></span>
+  </div>
+
+  <div class="container">
+    <header class="card">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">🌿 Эко-практикум • 6 «Б» класс</span>
+          <h1>Оживи школьный экопарк</h1>
+          <p class="subtitle">Переводи периодические дроби в обыкновенные несократимые и собирай ресурсы для роста парка.</p>
+          <div class="student-row">
+            <input type="text" class="field-input" id="studentName" placeholder="Имя (например: Петя)" required>
+          </div>
+        </div>
+
+        <div class="art-slot" id="heroArtSlot">
+          <svg viewBox="0 0 220 150" width="100%" height="135">
+            <defs>
+              <radialGradient id="heroSunHalo" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffe885"/><stop offset="65%" stop-color="#f2b632"/><stop offset="100%" stop-color="#f2b632" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="heroHillBack" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#89ce7e"/><stop offset="100%" stop-color="#58b05a"/></linearGradient>
+              <linearGradient id="heroRiver" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7dd3fc"/><stop offset="50%" stop-color="#4fb3e8"/><stop offset="100%" stop-color="#2894d1"/></linearGradient>
+              <radialGradient id="heroCrown" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#7cd470"/><stop offset="60%" stop-color="#2f7d45"/><stop offset="100%" stop-color="#1b522c"/></radialGradient>
+            </defs>
+            <g class="anim-cloud" opacity="0.75" fill="#ffffff"><ellipse cx="42" cy="26" rx="16" ry="6"/><ellipse cx="54" cy="24" rx="12" ry="5.5"/><ellipse cx="122" cy="20" rx="11" ry="4.5"/></g>
+            <g opacity="0.45" fill="#2f7d45"><polygon points="24,105 33,78 42,105"/><polygon points="38,108 48,74 58,108"/><polygon points="168,106 178,76 188,106"/></g>
+            <g id="layer-sun" class="eco-layer"><circle cx="178" cy="34" r="28" fill="url(#heroSunHalo)"/><g class="anim-sun-rays" stroke="#f2b632" stroke-width="2.5" stroke-linecap="round"><line x1="178" y1="10" x2="178" y2="15"/><line x1="178" y1="53" x2="178" y2="58"/><line x1="154" y1="34" x2="159" y2="34"/><line x1="197" y1="34" x2="202" y2="34"/><line x1="161" y1="17" x2="165" y2="21"/><line x1="191" y1="47" x2="195" y2="51"/><line x1="195" y1="17" x2="191" y2="21"/><line x1="165" y1="47" x2="161" y2="51"/></g><circle cx="178" cy="34" r="15" fill="#f7c544"/></g>
+            <path d="M0 116 Q 95 86, 220 112 L 220 150 L 0 150 Z" fill="url(#heroHillBack)" opacity="0.72"/>
+            <g id="layer-water" class="eco-layer"><path d="M6 126 Q 72 110, 130 125 T 216 118 L 216 146 L 6 146 Z" fill="url(#heroRiver)"/><path d="M28 128 Q 58 122, 86 128 M136 131 Q 168 125, 198 130" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.75"/></g>
+            <g class="anim-tree">
+              <g id="layer-trunk" class="eco-layer"><path d="M95 112 Q 97 88, 94 68 L 110 68 Q 107 88, 111 112 Z" fill="#8f4e2a"/><path d="M96 84 L 82 72 M108 82 L 122 70" stroke="#8f4e2a" stroke-width="4" stroke-linecap="round"/></g>
+              <g id="layer-crown" class="eco-layer"><circle cx="80" cy="64" r="22" fill="url(#heroCrown)"/><circle cx="124" cy="64" r="22" fill="url(#heroCrown)"/><circle cx="102" cy="43" r="26" fill="url(#heroCrown)"/><rect x="112" y="64" width="11" height="13" rx="2" fill="#f5deb3" stroke="#7a4222" stroke-width="1.2"/><polygon points="110,65 117.5,58 125,65" fill="#b5653a"/><circle cx="117.5" cy="70" r="2.2" fill="#3d2212"/></g>
+            </g>
+            <g id="layer-bloom" class="eco-layer"><circle cx="82" cy="57" r="4" fill="#f2b632"/><circle cx="122" cy="56" r="4" fill="#ff8a65"/><circle cx="102" cy="36" r="4.5" fill="#f2b632"/><circle cx="44" cy="110" r="3.5" fill="#fff176"/><circle cx="164" cy="108" r="3.5" fill="#ff8a65"/><g class="anim-butterfly" transform="translate(66, 36)"><ellipse cx="-3" cy="0" rx="4" ry="2.8" fill="#ffd54f" transform="rotate(-25)"/><ellipse cx="3" cy="0" rx="4" ry="2.8" fill="#ffb300" transform="rotate(25)"/></g><g transform="translate(142, 102)"><path d="M0,10 Q8,0 16,10 Z" fill="#6d4c41"/><ellipse cx="14" cy="9" rx="5" ry="3.5" fill="#d7ccc8"/><circle cx="18" cy="8.5" r="1.2" fill="#14301f"/></g></g>
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <section class="mission-banner">
+      <div class="mission-head">
+        <div class="mission-icon">🇰🇿</div>
+        <div class="mission-text">
+          <h3>Миссия «Адал Азамат»</h3>
+          <p>Решай задания честно, не подглядывая в чужой экран. Заполни все поля и спаси экопарк, проявив свои лучшие качества!</p>
+        </div>
+      </div>
+      <div class="values-map" id="valuesMap"></div>
+    </section>
+
+    <section class="card hud-bar" id="hudBar">
+      <div class="hud-row">
+        <div class="resources">
+          <div class="res-pill res-water" id="waterPill"><span class="dot-indicator" style="background: var(--water);"></span> Вода: <span id="waterCount">0</span></div>
+          <div class="res-pill res-sun" id="sunPill"><span class="dot-indicator" style="background: var(--sun);"></span> Солнце: <span id="sunCount">0</span></div>
+        </div>
+        <div class="leaf-steps" id="leafSteps"></div>
+      </div>
+      <div class="values-track" id="valuesTrack">
+        <div class="value-track-item honesty" id="vt-honesty">🕊️ Честность <span class="vt-label">(без подсказок)</span></div>
+        <div class="value-track-item diligence" id="vt-diligence">💪 Трудолюбие <span class="vt-label">(все поля)</span></div>
+        <div class="value-track-item cooperation" id="vt-cooperation">🤝 Сотрудничество <span class="vt-label">(отправка)</span></div>
+      </div>
+    </section>
+
+    <main id="tasksList"></main>
+
+    <button class="btn-submit" id="submitBtn" onclick="submitResults()">Отправить результаты учителю</button>
+  </div>
+
+  <script>
+    // ССЫЛКА БЕЗ ПРОБЕЛОВ И ПЛЮСОВ
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxz2jpa6HP62UyOR4JsnRwNHeu22vBZ7qoii-bqSxOl2hG1vb_42sfmke7-Dy4n12YsMw/exec';
+
+    const SOURCE_TASKS = [
+      {
+        id: 1, icon: "💧", title: "Сектор 1 • Полив саженцев",
+        value: "Честность", valueIcon: "🕊️",
+        question: `На полив саженцев ушло <strong>0,(3)</strong> запаса воды. Запишите эту долю в виде обыкновенной несократимой дроби:`,
+        why: "Честность — это точность: нельзя выдать «примерно» за «точно». Проверь каждую пару.",
+        correct: "1/3",
+        svg: `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="bgS1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e2f4ea"/><stop offset="100%" stop-color="#cdebd9"/></linearGradient><linearGradient id="canBody1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#66bb6a"/><stop offset="100%" stop-color="#2e7d32"/></linearGradient><linearGradient id="waterStream1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#81d4fa"/><stop offset="100%" stop-color="#0288d1"/></linearGradient></defs><rect width="100" height="100" fill="url(#bgS1)"/><circle cx="80" cy="20" r="14" fill="#ffffff" opacity="0.5"/><path d="M0 80 Q50 68 100 80 L100 100 L0 100 Z" fill="#795548"/><path d="M12 86 Q50 78 88 86" stroke="#5d4037" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M68,80 Q65,62 72,48" stroke="#2e7d32" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M69,62 C52,55 52,40 69,52 Z" fill="#66bb6a"/><path d="M71,52 C85,42 93,54 76,63 Z" fill="#43a047"/><circle cx="60" cy="51" r="3" fill="#e53935"/><circle cx="58" cy="50" r="1.2" fill="#212121"/><g transform="translate(10, 12) rotate(-12 30 30)"><path d="M14,18 Q5,12 4,24 Q3,36 14,34" stroke="#1b5e20" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="14" y="16" width="26" height="24" rx="5" fill="url(#canBody1)"/><rect x="17" y="12" width="20" height="4" rx="2" fill="#a5d6a7"/><path d="M40,32 L58,20 L61,25 L40,38 Z" fill="#388e3c"/><ellipse cx="60" cy="22" rx="3" ry="5" transform="rotate(-30 60 22)" fill="#81c784"/></g><g class="anim-drops" fill="url(#waterStream1)"><circle cx="66" cy="36" r="2.2"/><circle cx="72" cy="41" r="2"/><circle cx="63" cy="45" r="1.8"/><circle cx="70" cy="50" r="2.2"/></g></svg>`
+      },
+      {
+        id: 2, icon: "☀️", title: "Сектор 2 • Солнечная поляна",
+        value: "Ответственность", valueIcon: "🛡️",
+        question: `Панели отвечают за энергию парка. Ответственный подход: точно знать,
+                   какую часть крыши они занимают. Панели покрывают <strong>0,(27)</strong> крыши.
+                   Запиши эту долю несократимой дробью:`,
+        why: "Ответственность — это точность: нельзя сказать «примерно», нужно знать долю точно.",
+        correct: "3/11",
+        svg: `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="bgS2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff4d2"/><stop offset="100%" stop-color="#fde4a6"/></linearGradient><linearGradient id="panelGrad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e4d6b"/><stop offset="100%" stop-color="#0f2c40"/></linearGradient></defs><rect width="100" height="100" fill="url(#bgS2)"/><polygon points="50,34 15,82 85,82" fill="#ffffff" opacity="0.38"/><g class="anim-sun-rays-sm" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"><line x1="50" y1="10" x2="50" y2="16"/><line x1="50" y1="52" x2="50" y2="58"/><line x1="26" y1="34" x2="32" y2="34"/><line x1="68" y1="34" x2="74" y2="34"/><line x1="33" y1="17" x2="37" y2="21"/><line x1="63" y1="47" x2="67" y2="51"/><line x1="67" y1="17" x2="63" y2="21"/><line x1="37" y1="47" x2="33" y2="51"/></g><circle cx="50" cy="34" r="14" fill="#fbbf24"/><path d="M0 80 Q35 66 70 80 T100 76 L100 100 L0 100 Z" fill="#68b35c"/><rect x="47" y="68" width="6" height="18" fill="#5d4037"/><g transform="translate(26, 48) rotate(-8 24 12)"><rect x="0" y="0" width="48" height="24" rx="4" fill="url(#panelGrad2)" stroke="#90caf9" stroke-width="1.5"/><line x1="16" y1="0" x2="16" y2="24" stroke="#64b5f6" stroke-width="1"/><line x1="32" y1="0" x2="32" y2="24" stroke="#64b5f6" stroke-width="1"/><line x1="0" y1="12" x2="48" y2="12" stroke="#64b5f6" stroke-width="1"/></g><circle cx="18" cy="88" r="3" fill="#fff59d"/><circle cx="82" cy="86" r="3" fill="#ff8a65"/></svg>`
+      },
+      {
+        id: 3, icon: "⛲", title: "Сектор 3 • Лесной родник",
+        value: "Уважение", valueIcon: "🌊",
+        question: `Родник — общий для всех. Уважение к природе: не тратить больше, чем нужно.
+                   За час родник наполняет бассейн на <strong>0,1(6)</strong>.
+                   Запиши эту долю несократимой дробью:`,
+        why: "Уважение — это бережное отношение: знать точную долю, чтобы не растратить лишнего.",
+        correct: "1/6",
+        svg: `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="bgS3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#dff3fc"/><stop offset="100%" stop-color="#c4e8f7"/></linearGradient><linearGradient id="springWater3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4fc3f7"/><stop offset="100%" stop-color="#0288d1"/></linearGradient></defs><rect width="100" height="100" fill="url(#bgS3)"/><path d="M0 76 Q50 66 100 76 L100 100 L0 100 Z" fill="#76ba6c"/><path d="M18 82 L18 38 Q18 20 50 20 Q82 20 82 38 L82 82 Z" fill="#78909c"/><path d="M30 82 L30 46 Q50 32 70 46 L70 82 Z" fill="#263238"/><path d="M36 52 Q50 48 64 52 L72 86 L28 86 Z" fill="url(#springWater3)"/><path d="M44 56 Q48 68 45 80 M56 56 Q52 68 55 80" stroke="#e1f5fe" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M22 28 Q32 36 40 26 Q48 35 56 25" fill="#66bb6a"/><ellipse cx="22" cy="82" rx="10" ry="6" fill="#90a4ae"/><ellipse cx="78" cy="82" rx="11" ry="6" fill="#607d8b"/><circle class="anim-sparkle" cx="38" cy="74" r="2.2" fill="#ffffff"/><circle class="anim-sparkle" cx="62" cy="70" r="2" fill="#ffffff" style="animation-delay:0.8s"/></svg>`
+      },
+      {
+        id: 4, icon: "🍓", title: "Сектор 4 • Ягодная тропа",
+        value: "Сотрудничество", valueIcon: "🤝",
+        question: `Урожай собирают вместе, и каждый должен понимать свою долю.
+                   Ягодные кустарники занимают <strong>0,(45)</strong> площади экопарка.
+                   Запиши это число несократимой дробью:`,
+        why: "Сотрудничество работает, когда каждый точно знает свою часть общей площади.",
+        correct: "5/11",
+        svg: `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="berryRich4" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#ff6b8b"/><stop offset="100%" stop-color="#ad1457"/></radialGradient></defs><rect width="100" height="100" fill="#faf5e8"/><path d="M8,90 Q42,72 92,88" stroke="#d7bfa0" stroke-width="14" stroke-linecap="round" fill="none"/><ellipse cx="32" cy="83" rx="5" ry="2.5" fill="#bcaaa4"/><ellipse cx="64" cy="82" rx="6" ry="2.5" fill="#a1887f"/><circle cx="34" cy="48" r="22" fill="#559e50"/><circle cx="64" cy="42" r="24" fill="#3e823b"/><circle cx="78" cy="56" r="17" fill="#68b362"/><circle cx="50" cy="58" r="18" fill="#468c42"/><g><circle cx="36" cy="44" r="6" fill="url(#berryRich4)"/><circle cx="34" cy="42" r="1.6" fill="#ffffff" opacity="0.8"/><circle cx="60" cy="38" r="7" fill="url(#berryRich4)"/><circle cx="58" cy="36" r="2" fill="#ffffff" opacity="0.8"/><circle cx="72" cy="53" r="5.5" fill="url(#berryRich4)"/><circle cx="48" cy="60" r="6" fill="url(#berryRich4)"/><circle cx="46" cy="58" r="1.6" fill="#ffffff" opacity="0.8"/></g><circle cx="26" cy="56" r="3" fill="#ffffff"/><circle cx="26" cy="56" r="1.2" fill="#fdd835"/><g class="anim-butterfly" transform="translate(76, 22)"><ellipse cx="-3.5" cy="0" rx="4.5" ry="3" fill="#4fc3f7" transform="rotate(-20)"/><ellipse cx="3.5" cy="0" rx="4.5" ry="3" fill="#039be5" transform="rotate(20)"/></g></svg>`
+      },
+      {
+        id: 5, icon: "🌰", title: "Сектор 5 • Дубовая роща",
+        value: "Трудолюбие", valueIcon: "💪",
+        question: `Молодые дубы растут медленно — как и результат труда. Доведи перевод до конца:
+                   дубы занимают <strong>0,2(3)</strong> территории рощи.
+                   Запиши эту долю несократимой дробью:`,
+        why: "Трудолюбие — это довести дело до конца, даже когда дробь сложная.",
+        correct: "7/30",
+        svg: `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="oakGrad5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7cb342"/><stop offset="100%" stop-color="#33691e"/></linearGradient></defs><rect width="100" height="100" fill="#eef6eb"/><path d="M50,82 C28,72 18,52 29,41 C23,30 35,19 50,14 C65,19 77,30 71,41 C82,52 72,72 50,82 Z" fill="url(#oakGrad5)"/><path d="M50,14 L50,88" stroke="#1b5e20" stroke-width="2.5" stroke-linecap="round"/><path d="M35,35 L46,43 M65,35 L54,43 M30,55 L44,59 M70,55 L56,59 M38,70 L47,68 M62,70 L53,68" stroke="#a5d6a7" stroke-width="1.8" stroke-linecap="round"/><g transform="translate(24, 66) rotate(-18)"><ellipse cx="0" cy="4" rx="8" ry="10" fill="#c68642"/><path d="M-9,-1 Q0,-9 9,-1 Z" fill="#5d4037"/><circle cx="-2.5" cy="4" r="1.1" fill="#263238"/><circle cx="2.5" cy="4" r="1.1" fill="#263238"/></g><g transform="translate(76, 68) rotate(18)"><ellipse cx="0" cy="4" rx="8" ry="10" fill="#b07030"/><path d="M-9,-1 Q0,-9 9,-1 Z" fill="#4e342e"/><circle cx="-2.5" cy="4" r="1.1" fill="#263238"/><circle cx="2.5" cy="4" r="1.1" fill="#263238"/></g><circle class="anim-sparkle" cx="20" cy="24" r="2.5" fill="#ffd54f"/><circle class="anim-sparkle" cx="82" cy="26" r="2.5" fill="#ffd54f" style="animation-delay:1s"/></svg>`
+      }
+    ];
+
+    function shuffle(array) {
+      let currentIndex = array.length, randomIndex;
+      while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+      }
+      return array;
+    }
+    const TASKS = shuffle([...SOURCE_TASKS]);
+
+    function normalize(str) {
+      return str.trim().replace(/\s+/g, "").replace(".", ",").toLowerCase();
+    }
+
+    function insertSlash(id) {
+      const input = document.getElementById(`in-${id}`);
+      if (!input.value.includes("/")) input.value += "/";
+      input.focus();
+      updatePreview(id);
+    }
+
+    function updatePreview(id) {
+      const val = document.getElementById(`in-${id}`).value.trim();
+      const box = document.getElementById(`prev-${id}`);
+      const card = document.getElementById(`card-${id}`);
+      if (!val) {
+        box.innerHTML = "—";
+        card.classList.remove("is-filled");
+        checkProgress(); return;
+      }
+      card.classList.add("is-filled");
+      if (val.includes("/")) {
+        const [a, b] = val.split("/");
+        box.innerHTML = `<span class="frac"><span class="num">${a || "?"}</span><span class="den">${b || "?"}</span></span>`;
+      } else {
+        box.textContent = val;
+      }
+      checkProgress();
+    }
+
+    let prevFilled = 0;
+    let honestyUnlocked = false;
+
+    function checkProgress() {
+      let currentFilled = 0;
+      TASKS.forEach(t => {
+        const val = document.getElementById(`in-${t.id}`).value.trim();
+        if (val.length > 0) {
+          currentFilled++;
+          document.getElementById(`step-${t.id}`).classList.add("done");
+        } else {
+          document.getElementById(`step-${t.id}`).classList.remove("done");
+        }
+      });
+
+      document.getElementById("waterCount").textContent = currentFilled;
+      document.getElementById("sunCount").textContent = currentFilled;
+
+      if (currentFilled !== prevFilled) {
+        const wPill = document.getElementById("waterPill");
+        const sPill = document.getElementById("sunPill");
+        wPill.classList.add("pulse");
+        sPill.classList.add("pulse");
+        setTimeout(() => {
+          wPill.classList.remove("pulse");
+          sPill.classList.remove("pulse");
+        }, 280);
+        prevFilled = currentFilled;
+      }
+
+      if (currentFilled === TASKS.length && !honestyUnlocked) {
+        honestyUnlocked = true;
+        document.getElementById("vt-honesty").classList.add("unlocked");
+      }
+      document.getElementById("vt-diligence").classList.toggle("unlocked", currentFilled === TASKS.length);
+
+      document.querySelectorAll(".value-chip").forEach((chip, i) => {
+        chip.classList.toggle("active", i < currentFilled);
+      });
+
+      const layers = ["layer-water", "layer-trunk", "layer-sun", "layer-crown", "layer-bloom"];
+      layers.forEach((layerId, idx) => {
+        const el = document.getElementById(layerId);
+        if (el) el.classList.toggle("active", idx < currentFilled);
+      });
+    }
+
+    function renderAll() {
+      document.getElementById("valuesMap").innerHTML = TASKS.map(t =>
+        `<span class="value-chip">${t.valueIcon} ${t.value}</span>`
+      ).join("");
+
+      document.getElementById("leafSteps").innerHTML = TASKS.map((t, i) => `
+        <div class="leaf-step" id="step-${t.id}">${i + 1}</div>
+      `).join("");
+
+      document.getElementById("tasksList").innerHTML = TASKS.map((t) => `
+        <article class="card task-card" id="card-${t.id}">
+          <div class="task-art" id="art-${t.id}">${t.svg}</div>
+          <div>
+            <div class="task-header">
+              <span class="task-badge">${t.icon} ${t.title}</span>
+              <span class="task-status-tag">✓ Записано</span>
+            </div>
+            <div class="task-question">${t.question}</div>
+            <div class="value-why">💡 ${t.why}</div>
+            <div class="controls-row">
+              <div class="input-cluster">
+                <input type="text" class="answer-box" id="in-${t.id}" placeholder="a/b"
+                  autocorrect="off" autocapitalize="off" spellcheck="false"
+                  oninput="updatePreview(${t.id})">
+                <button type="button" class="btn-slash" onclick="insertSlash(${t.id})">/</button>
+                <div class="live-preview" id="prev-${t.id}">—</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function submitResults() {
+      const name = document.getElementById('studentName').value.trim();
+
+      if (!name) return alert('Пожалуйста, напишите имя!');
+
+      let emptyFields = false;
+      let indScore = 0;
+
+      TASKS.forEach(t => {
+        const userVal = normalize(document.getElementById(`in-${t.id}`).value);
+        if (!userVal) emptyFields = true;
+        if (userVal === normalize(t.correct)) indScore += 1;
+      });
+
+      if (emptyFields) {
+        if (!confirm('Вы заполнили не все поля. Отправить как есть?')) return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerText = 'Отправка...';
+
+      document.getElementById("vt-cooperation").classList.add("unlocked");
+
+      const data = {
+        name: name, // Отправляем только имя
+        indScore: indScore,
+        pairScore: 0,
+        grpScore: 0
+      };
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        document.body.innerHTML = `
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #e6f1e4; font-family: 'Nunito', sans-serif; text-align: center; padding: 20px;">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🌳✨🦋</div>
+            <h1 style="color: #2f7d45; margin-bottom: 10px;">Спасибо за урок!</h1>
+            <p style="color: #14301f; font-size: 1.2rem; margin-bottom: 30px;">Твои ответы отправлены учителю. Вы отлично потрудились и спасли школьный экопарк!</p>
+            <button onclick="window.close()" style="padding: 12px 24px; font-size: 1rem; font-weight: bold; background: #2f7d45; color: white; border: none; border-radius: 8px; cursor: pointer;">Закрыть страницу</button>
+          </div>
+        `;
+      })
+      .catch(() => {
+        alert('Ошибка сети. Проверьте интернет и попробуйте еще раз.');
+        btn.disabled = false;
+        btn.innerText = 'Отправить результаты учителю';
+        document.getElementById("vt-cooperation").classList.remove("unlocked");
+      });
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
